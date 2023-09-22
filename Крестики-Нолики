@@ -1,0 +1,78 @@
+
+# количество клеток на каждой стороне
+pole_k = 3
+# решётка|поле
+pole = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+# игровое поле на экране
+def ris_pole():
+    print('_' * 4 * pole_k)
+    for i in range(pole_k):
+        print((' ' * 3 + '┃') * 3)
+        print('', pole[i * 3], '┃', pole[1 + i * 3], '┃', pole[2 + i * 3], '┃')
+        print(('_' * 3 + '┃') * 3)
+
+# ход
+def game_bot(index, char):
+    # функция хода игрока
+    if (index > 9 or index < 1 or pole[index - 1] in ('X', 'O')):
+        return False
+
+    pole[index - 1] = char
+    return True
+
+# победа
+def check_win():
+    # проверка
+    win = False
+
+    win_combo = (
+        (0, 1, 2), (3, 4, 5), (6, 7, 8), # Горизонтальные линии
+        (0, 4, 8), (2, 4, 6),            # Диагональные линии
+        (0, 3, 6), (1, 4, 7), (2, 5, 8)  # Вертикальные линии
+    )
+
+    for bruh in win_combo:
+        if (pole[bruh[0]] == pole[bruh[1]] and pole[bruh[1]] == pole[bruh[2]]):
+            win = pole[bruh[0]]
+
+
+    return win
+
+# старт игры
+def start_pole():
+
+    #Игрок
+    player = 'X'
+
+    #номер Хода
+    hod = 1
+    ris_pole()
+
+    while (hod < 10) and (check_win() == False):
+        index = input('Ход игрока ' + player + '. Введите номер поля (0 - выход):')
+        if (index == '0'):
+            break
+
+        # если получилось сделать шаг
+        if (game_bot(int(index), player)):
+            print('Отличный ход!')
+
+            if (player == 'X'):
+                player = 'O'
+            else:
+                player = 'X'
+
+            ris_pole()
+            # увеличение номера хода
+            hod += 1
+        else:
+            print('Неверный номер! Повторите!')
+    if (hod == 10):
+       print('Игра окончена. Ничья!')
+    else:
+        print(check_win() + ' Выиграл!')
+
+
+print('*Крестики-Нолики*')
+start_pole()
